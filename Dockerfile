@@ -1,0 +1,1 @@
+﻿# syntax=docker/dockerfile:1FROM python:3.10-alpine3.18ENV HOST=0.0.0.0ENV PORT=8090ENV PYTHONUNBUFFERED=1COPY . /opt/next-door-key-simulatorWORKDIR /opt/next-door-key-simulatorRUN apk add -U --no-cache bash curlRUN python3 -m ensurepipRUN pip3 install --no-cache --upgrade pip setuptoolsRUN pip3 install --no-cache -r requirements.txtCMD python3 app.py

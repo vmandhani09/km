@@ -1,0 +1,41 @@
+# Render Blueprint - QKD Key Management Entity Simulator
+# Deploy as a web service with MongoDB persistence
+
+services:
+  - type: web
+    name: qkd-kme-simulator
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app.py
+    envVars:
+      - key: HOST
+        value: 0.0.0.0
+      - key: PORT
+        value: 10000
+      - key: KME_ID
+        generateValue: true
+      - key: ATTACHED_SAE_ID
+        value: qumail-client
+      - key: DEFAULT_KEY_SIZE
+        value: 32
+      - key: MAX_KEY_COUNT
+        value: 100000
+      - key: MAX_KEYS_PER_REQUEST
+        value: 128
+      - key: MAX_KEY_SIZE
+        value: 1024
+      - key: MIN_KEY_SIZE
+        value: 32
+      - key: KEY_GEN_SEC_TO_GEN
+        value: 30
+      - key: KEY_GEN_BATCH_SIZE
+        value: 64
+      - key: KEY_ACQUIRE_TIMEOUT
+        value: 10
+      - key: NETWORK_TIMEOUT
+        value: 5
+      - key: MONGODB_URI
+        sync: false  # Set this manually in Render dashboard
+      - key: MONGODB_DATABASE
+        value: qumail_kme
+    healthCheckPath: /api/v1/status
