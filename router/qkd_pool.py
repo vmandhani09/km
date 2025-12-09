@@ -153,14 +153,31 @@ class QkdPoolRouter:
             
             print(f"[QKD_POOL] Generated and stored {inserted} key blocks")
             
-            return jsonify({
+            # Check if sender wants key data returned (for local storage)
+            include_keys = data.get('includeKeys', True)  # Default to include for sender
+            
+            response_data = {
                 'success': True,
                 'senderId': sender_id,
                 'receiverId': receiver_id,
                 'count': inserted,
-                'keyIds': key_ids[:inserted],  # Only return successfully inserted IDs
+                'keyIds': key_ids[:inserted],
                 'blockSizeBytes': KEY_BLOCK_SIZE_BYTES
-            }), 201
+            }
+            
+            # Include key data for sender's local storage
+            if include_keys:
+                response_data['keys'] = [
+                    {
+                        'keyId': b.key_id,
+                        'keyData': b.key_data,
+                        'senderId': sender_id,
+                        'receiverId': receiver_id
+                    }
+                    for b in blocks[:inserted]
+                ]
+            
+            return jsonify(response_data), 201
             
         except Exception as e:
             print(f"[QKD_POOL] Error in request_key_pool: {e}")
